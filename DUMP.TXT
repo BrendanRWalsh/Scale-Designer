@@ -1,0 +1,24 @@
+
+        // xPos = scale.x * 61 / app.z
+        // scale.y % 2 == 0 ? xPos += (61 / app.z / 2) : xPos = xPos
+        // //draw scale base
+        // cb.ctx.drawImage(
+        //     img,
+        //     xPos,
+        //     scale.y * 100 / 2 / app.z,
+        //     61 / app.z,
+        //     100 / app.z)
+        // //draw scale colour
+        // cc.ctx.fillStyle = scale.colour
+        // cc.ctx.fillRect(
+        //     xPos,
+        //     scale.y * 100 / 2 / app.z,
+        //     61 / app.z,
+        //     100 / app.z)
+        // //draw scale normal
+        // cn.ctx.drawImage(
+        //     img,
+        //     xPos,
+        //     scale.y * 100 / 2 / app.z,
+        //     61 / app.z,
+        //     100 / app.z)
