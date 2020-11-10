@@ -25,7 +25,8 @@ const app = {
         x: 0,
         y: 0,
         lastX: 0,
-        lastY: 0
+        lastY: 0,
+        selections: []
     },
     history: [], //tracker for changes
     x: 0,
@@ -39,7 +40,8 @@ const app = {
     },
     selection: {
         size: 1,
-        colour: 'purple'
+        colour: 'purple',
+        tool: 'brush'
     },
     init: function () {
         //engage main draw port
@@ -71,14 +73,6 @@ const app = {
             }
         }
     },
-    coordToMap: function (x, y) {
-        x2 = app.z * x * 60 + app.x
-        y2 = app.z * y * 35 + app.y
-        if (y % 2 != 0) {
-            x2 += 30 * app.z
-        }
-        return [x2, y2]
-    },
     drawScale: function (x, y, scale, alpha) {
         let c = app.coordToMap(x, y)
         ctx.save()
@@ -106,6 +100,13 @@ const app = {
         }
         ctx.globalAlpha = alpha || 1
         ctx.fill()
+        if (scale[2]) {
+            ctx.save()
+            ctx.globalAlpha = alpha || 0.5
+            ctx.fillStyle = "white"
+            ctx.fill()
+            ctx.restore()
+        }
         ctx.restore()
         ctx.save()
         ctx.globalCompositeOperation = "destination-out"
@@ -122,11 +123,21 @@ const app = {
             61 * app.z,
             100 * app.z)
         ctx.restore()
+
     },
     viewportCalc: function (x, y) {
         x2 = x * (app.canvas.width - app.x) / app.z
         y2 = y * (app.canvas.height - app.y) / app.z
         return [x2, y2]
+    },
+    toolChange: function (change) {
+        switch (change) {
+            case "primaryColour":
+                app.selection.colour = window.getComputedStyle(document.getElementById('primaryColour')).backgroundColor
+                break;
+            case "secondaryColour":
+                app.selection.colour = window.getComputedStyle(document.getElementById('secondaryColour')).backgroundColor
+        }
     },
     input: function () {
         window.addEventListener("keydown", function (e) {
@@ -184,16 +195,70 @@ const app = {
         y2 = Math.round((y - app.offset.y - app.y - 20) / (35 * app.z))
         return [x2, y2]
     },
+    coordToMap: function (x, y) {
+        x2 = app.z * x * 60 + app.x
+        y2 = app.z * y * 35 + app.y
+        if (y % 2 != 0) {
+            x2 += 30 * app.z
+        }
+        return [x2, y2]
+    },
     checkMouseOver: function () {
 
     },
     gridClicked: function (x, y) {
-        if (!app.checkScaleExists(x, y)) {
-            app.newScale(x, y, app.selection.size, app.selection.colour)
-        } else {
-            app.scales[y][x][1] = app.selection.colour
-            app.drawScreen()
-        }
+        switch (app.selection.tool) {
+            case "brush":
+                if (!app.checkScaleExists(x, y)) {
+                    app.newScale(x, y, app.selection.size, app.selection.colour)
+                } else {
+                    app.scales[y][x][1] = app.selection.colour
+                    app.drawScreen()
+                }
+                break;
+            case "eraser":
+                if (app.scales[y]) {
+                    if (app.scales[y][x]) {
+                        app.scales[y][x] = []
+                        app.drawScreen()
+                    }
+                }
+                break;
+            case 'select':
+                if (app.scales[y]) {
+                    if (app.scales[y][x]) {
+                        app.scales[y][x][2] = !app.scales[y][x][2]
+                        app.drawScreen()
+                    }
+                }
+                break;
+            case 'bucket':
+                if (app.ghost.selections.length != 0) {
+                    for (i = app.scales.length - 1; i >= 0; i--) {
+                        if (app.scales[i] != "") {
+                            for (j = app.scales[i].length - 1; j >= 0; j--) {
+                                if (app.scales[i][j] != "") {
+                                    if (app.scales[i][j][2] == true) {
+                                        app.scales[i][j][1] = app.selection.colour
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (i = app.scales.length - 1; i >= 0; i--) {
+                        if (app.scales[i] != "") {
+                            for (j = app.scales[i].length - 1; j >= 0; j--) {
+                                if (app.scales[i][j] != "") {
+                                    app.scales[i][j][1] = app.selection.colour
+                                }
+                            }
+                        }
+                    }
+                }
+                app.drawScreen()
+
+        };
     },
     checkScaleExists(x, y) {
         if (app.scales[y]) {
@@ -209,14 +274,14 @@ const app = {
     newScale: function (x, y, size, colour) {
         shift = null
         if (y == -1) {
-            shift = app.coordToMap(x,y)
+            shift = app.coordToMap(x, y)
             app.scales.unshift([])
             y = 0
             app.y += shift[1]
         }
         if (x == -1) {
             if (shift != null) {
-                shift = app.coordToMap(x,y)
+                shift = app.coordToMap(x, y)
             }
             for (arr of app.scales) {
                 arr.unshift([])
@@ -239,7 +304,7 @@ const app = {
             }
 
         }
-        app.scales[y][x] = [size, colour]
+        app.scales[y][x] = [size, colour, false]
         app.drawScreen()
     }
 }

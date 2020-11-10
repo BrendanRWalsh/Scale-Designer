@@ -25,34 +25,34 @@
         <div class="toolPanelContainer">
             <div class="panel toolPanel">
                 <div class="toolsContainer">
-                    <div class="tool" id="pencil">
+                    <div class="tool" id="brush" onclick="app.selection.tool = 'brush'">
                         <img class="toolImage" src="assets/tool_brush_icon.png" />
                     </div>
-                    <div class="tool" id="move">
+                    <div class="tool" id="move"onclick="app.selection.tool = 'move'">
                         <img class="toolImage" src="assets/tool_move_icon.png" />
                     </div>
-                    <div class="tool" id="select">
+                    <div class="tool" id="select"onclick="app.selection.tool = 'select'">
                         <img class="toolImage" src="assets/tool_select_icon.svg" />
                     </div>
-                    <div class="tool" id="marquee">
+                    <div class="tool" id="marquee"onclick="app.selection.tool = 'marquee'">
                         <img class="toolImage" src="assets/tool_marquee_icon.png" />
                     </div>
-                    <div class="tool" id="bucket">
+                    <div class="tool" id="bucket"onclick="app.selection.tool = 'bucket'">
                         <img class="toolImage" src="assets/tool_bucket_icon.png" />
                     </div>
-                    <div class="tool" id="eyeDropper">
+                    <div class="tool" id="eyeDropper"onclick="app.selection.tool = 'eyeDropper'">
                         <img class="toolImage" src="assets/tool_eyedropper_icon.png" />
                     </div>
-                    <div class="tool" id="eraser">
+                    <div class="tool" id="eraser" onclick="app.selection.tool = 'eraser'">
                         <img class="toolImage" src="assets/tool_eraser_icon.png" />
                     </div>
 
                 </div>
-                <div class="primaryColor"></div>
-                <div class="secondaryColor"></div>
-                <div class="dropDown" id="sizeFilter"></div>
-                <div class="dropDown" id="typeFilter"></div>
-                <div class="scalePicker"></div>
+                <div id="primaryColour" onclick="app.toolChange('primaryColour')"></div>
+                <div id="secondaryColour" onclick="app.toolChange('secondaryColour')"></div>></div>
+                <div id="dropDown" id="sizeFilter"></div>
+                <div id="dropDown" id="typeFilter"></div>
+                <div id="scalePicker"></div>
             </div>
         </div>
 
