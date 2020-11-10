@@ -24,6 +24,7 @@ const app = {
         y: 0,
         down: false,
     },
+    keys : [],
     selection: {
         size: 1,
         colour: 'purple',
@@ -93,7 +94,7 @@ const app = {
         ctx.save()
         ctx.globalCompositeOperation = "destination-out"
         ctx.beginPath();
-        ctx.arc(c[0], c[1] + (21 * app.z), 15 * app.z, 0, 2 * Math.PI)
+        ctx.arc(c[0], c[1] + (21 * app.z), 14 * app.z, 0, 2 * Math.PI)
         ctx.fill()
         ctx.globalCompositeOperation = "source-atop"
         ctx.globalAlpha = 0.4;
@@ -124,19 +125,12 @@ const app = {
     },
     input: function () {
         window.addEventListener("keydown", function (e) {
-            if (e.key == "ArrowLeft") {
-                app.x += 10
-            }
-            if (e.key == "ArrowRight") {
-                app.x -= 10
-            }
-            if (e.key == "ArrowUp") {
-                app.y += 10
-            }
-            if (e.key == "ArrowDown") {
-                app.y -= 10
-            }
+            app.keys[e.key] = true
+            app.checkKeys()
             app.drawScreen()
+        })
+        window.addEventListener("keyup", function (e) {
+            app.keys[e.key] = false
         })
         app.canvas.addEventListener("pointerdown", e => {
             app.pointer.down = true
@@ -190,6 +184,20 @@ const app = {
     checkMouseOver: function () {
 
     },
+    checkKeys: function(){
+        if (app.keys["ArrowLeft"]) {
+            app.x += 10
+        }
+        if (app.keys["ArrowRight"]) {
+            app.x -= 10
+        }
+        if (app.keys["ArrowUp"]) {
+            app.y += 10
+        }
+        if (app.keys["ArrowDown"]) {
+            app.y -= 10
+        }
+    },
     gridClicked: function (x, y) {
         switch (app.selection.tool) {
             case "brush":
@@ -208,7 +216,6 @@ const app = {
                     }
                 }
                 break;
-
             case 'select':
                 //scale exists at pointer?
                 if (app.scales[y]) {
@@ -232,6 +239,7 @@ const app = {
                 }
                 break;
             case 'marquee':
+                
                 break;
 
             case 'bucket':
