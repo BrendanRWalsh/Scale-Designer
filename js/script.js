@@ -1,17 +1,3 @@
-class Scale {
-    constructor(x, y, size, colour) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.colour = colour;
-    }
-    changeColour(colour) {
-        this.colour = colour
-    }
-    changeSize() {}
-    delete() {}
-}
-
 const app = {
     canvas: null,
     ctx: null,
@@ -41,7 +27,8 @@ const app = {
     selection: {
         size: 1,
         colour: 'purple',
-        tool: 'brush'
+        tool: 'brush',
+        mode: 'select'
     },
     init: function () {
         //engage main draw port
@@ -93,18 +80,13 @@ const app = {
             c[0],
             c[1])
         ctx.closePath()
-        try {
-            ctx.fillStyle = scale[1]
-        } catch (error) {
-            console.log([x, y, scale, alpha])
-        }
+        ctx.fillStyle = scale[1]
         ctx.globalAlpha = alpha || 1
         ctx.fill()
         if (scale[2]) {
-            ctx.save()
             ctx.globalAlpha = alpha || 0.5
-            ctx.fillStyle = "white"
-            ctx.fill()
+            ctx.strokeStyle = "cyan"
+            ctx.stroke()
             ctx.restore()
         }
         ctx.restore()
@@ -123,6 +105,7 @@ const app = {
             61 * app.z,
             100 * app.z)
         ctx.restore()
+
 
     },
     viewportCalc: function (x, y) {
@@ -162,6 +145,7 @@ const app = {
         });
         app.canvas.addEventListener("pointerup", e => {
             app.pointer.down = false
+            app.selection.selectMode = null
         });
         app.canvas.addEventListener("contextmenu", e => {
             e.preventDefault();
@@ -224,14 +208,32 @@ const app = {
                     }
                 }
                 break;
+
             case 'select':
+                //scale exists at pointer?
                 if (app.scales[y]) {
                     if (app.scales[y][x]) {
-                        app.scales[y][x][2] = !app.scales[y][x][2]
+                        //select mode chosen?
+                        if (app.selection.selectMode == null) {
+                            if (app.scales[y][x][2] == false) {
+                                app.selection.selectMode = "select"
+                            } else {
+                                app.selection.selectMode = "deselect"
+                            }
+                        }
+                        if (app.selection.selectMode == "select") {
+                            app.scales[y][x][2] = true
+                        } else {
+                            app.scales[y][x][2] = false
+                        }
+                        // console.log(app.selection.selectMode)
                         app.drawScreen()
                     }
                 }
                 break;
+            case 'marquee':
+                break;
+
             case 'bucket':
                 if (app.ghost.selections.length != 0) {
                     for (i = app.scales.length - 1; i >= 0; i--) {
