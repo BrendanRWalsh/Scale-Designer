@@ -24,7 +24,7 @@ const app = {
         y: 0,
         down: false,
     },
-    keys : [],
+    keys: [],
     selection: {
         size: 1,
         colour: 'purple',
@@ -121,6 +121,7 @@ const app = {
                 break;
             case "secondaryColour":
                 app.selection.colour = window.getComputedStyle(document.getElementById('secondaryColour')).backgroundColor
+                break;
         }
     },
     input: function () {
@@ -184,7 +185,7 @@ const app = {
     checkMouseOver: function () {
 
     },
-    checkKeys: function(){
+    checkKeys: function () {
         if (app.keys["ArrowLeft"]) {
             app.x += 10
         }
@@ -219,7 +220,7 @@ const app = {
             case 'select':
                 //scale exists at pointer?
                 if (app.scales[y]) {
-                    if (app.scales[y][x]) {
+                    if (app.scales[y][x] && app.scales[y][x] != '') {
                         //select mode chosen?
                         if (app.selection.selectMode == null) {
                             if (app.scales[y][x][2] == false) {
@@ -239,7 +240,7 @@ const app = {
                 }
                 break;
             case 'marquee':
-                
+
                 break;
 
             case 'bucket':
@@ -266,9 +267,9 @@ const app = {
                         }
                     }
                 }
-                app.drawScreen()
-
+                break;
         };
+        app.drawScreen()
     },
     checkScaleExists(x, y) {
         if (app.scales[y]) {
@@ -320,24 +321,11 @@ const app = {
 }
 
 app.init()
-// app.scales = [
-//     [
-//         [1, 'red'],
-//         [1, 'orange'],
-//         [1, 'yellow'],
-//         [1, 'green'],
-//         [1, 'blue'],
-//         [1, '#FFFFFF']
-//     ],
-//     [
-//         [1, 'purple'],
-//         [1, 'purple'],
-//         [1, 'purple'],
-//         [1, 'purple'],
-//         [1, 'purple'],
-//         [1, 'purple']
-//     ]
-// ]
 img.onload = function () {
     app.drawScreen()
+}
+nyph = {
+    p: "#4e43bb",
+    w: "#f9f8f3",
+    r: "#d3443e"
 }
