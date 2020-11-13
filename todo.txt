@@ -1,0 +1,6 @@
+History tracker
+convert windows to dragable divs via handles
+    allow snapping to pre-defined points on the screen
+    Get the rest of the tools working
+        Marquee may need selection re-written
+            pull math into another function for easier calls
