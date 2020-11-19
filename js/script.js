@@ -199,6 +199,7 @@ const app = {
             window.addEventListener("wheel", e => {
                 if (e.deltaY < 0) {
                     app.vp.z += 0.1
+                    app.vp.x -= (app.input.pointer.x)
                 };
                 if (e.deltaY > 0) {
                     app.vp.z -= 0.1
@@ -354,7 +355,48 @@ const app = {
             }
             app.scales.main[y][x] = [size, colour, false]
             app.f.drawScreen()
+        },
+        contiguous: function (x, y, z) {
+            function check(x, y, z) {
+                if (s[y] && s[y] != "") {
+                    if (s[y][x] && s[y][x] != "") {
+                        if (z) {
+                            if (s[y][x][1] == z) {
+                                a.push([y, x])
+                            } else {
+                                b.push([y, x])
+                            }
+                        } else {
+                            a.push([y, x])
+                        }
+                    } else {
+                        b.push([y, x])
+                    }
+                } else {
+                    b.push([y, null])
+                }
+            }
+            let a = [] //contigious
+            let b = [] //ignore
+            const n = [
+                [-2, 0],
+                [-1, 0],
+                [-1, 1],
+                [0, -1],
+                [0, 1],
+                [1, 0],
+                [1, 1],
+                [2, 0]
+            ] //neighbours to check
+            let s = app.scales.main //scale shortcut
+            let end = false
+            for (i of n) {
+                check(x + i[0], x + i[1])
+            }
+
+            return t
         }
+
     },
 
 }
